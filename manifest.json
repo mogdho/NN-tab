@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "Aether New Tab",
+  "version": "1.0.0",
+  "description": "A minimalist, dark-themed dashboard for your new tab.",
+  "chrome_url_overrides": {
+    "newtab": "index.html"
+  },
+  "permissions": [
+    "storage",
+    "unlimitedStorage",
+    "bookmarks"
+  ],
+  "host_permissions": [
+    "https://zenquotes.io/*",
+    "*://*/*"
+  ],
+  "background": {
+    "service_worker": "js/background.js"
+  },
+  "icons": {
+    "16": "tab.png",
+    "48": "tab.png",
+    "128": "tab.png"
+  }
+}

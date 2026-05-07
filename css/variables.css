@@ -1,0 +1,22 @@
+:root {
+    --bg-pure-black: #000000;
+    --text-primary: #FFFFFF;
+    --text-secondary: #c4c7c8;
+    --surface-container-high: #2a2a2a;
+    --outline-variant: rgba(68, 71, 72, 0.3);
+    
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    
+    --space-xs: 4px;
+    --space-sm: 12px;
+    --space-md: 24px;
+    --space-lg: 48px;
+    --space-xl: 80px;
+
+    --radius-sm: 12px;
+    --radius-md: 24px;
+    --radius-pill: 9999px;
+    
+    --font-primary: 'Inter', sans-serif;
+}
