@@ -2,7 +2,6 @@
 
 A sleek, ultra-minimalist, and high-performance New Tab dashboard for Google Chrome. Built entirely with vanilla web technologies, Aether strips away distractions while providing a meticulously crafted "Nocturnal Minimalism" aesthetic.
 
-![Aether Showcase](https://via.placeholder.com/1200x600/121212/ffffff?text=Aether+New+Tab) *(Replace with actual screenshot)*
 
 ## ✨ Features
 
