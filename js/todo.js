@@ -3,6 +3,7 @@ export function initTodo() {
     const addTodoBtn = document.getElementById('add-todo-btn');
     
     let todos = [];
+    let isAdding = false;
 
     function renderTodos() {
         todoList.innerHTML = '';
@@ -60,14 +61,52 @@ export function initTodo() {
         }
     }
 
-    addTodoBtn.addEventListener('click', () => {
-        const text = prompt('Enter a new note:');
-        if (text && text.trim() !== '') {
-            todos.push(text.trim());
-            saveTodos();
+    function showInlineInput() {
+        if (isAdding) return;
+        isAdding = true;
+
+        const li = document.createElement('li');
+        li.className = 'todo-item';
+
+        const dash = document.createElement('span');
+        dash.className = 'dash';
+        dash.textContent = '-';
+
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.className = 'todo-input-inline';
+        input.placeholder = 'Type a new note...';
+
+        function commitInput() {
+            const value = input.value.trim();
+            if (value) {
+                todos.push(value);
+                saveTodos();
+            }
+            isAdding = false;
             renderTodos();
         }
-    });
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                commitInput();
+            } else if (e.key === 'Escape') {
+                isAdding = false;
+                renderTodos();
+            }
+        });
+
+        input.addEventListener('blur', commitInput);
+
+        li.appendChild(dash);
+        li.appendChild(input);
+        todoList.appendChild(li);
+
+        input.focus();
+    }
+
+    addTodoBtn.addEventListener('click', showInlineInput);
 
     loadTodos();
 }

@@ -1,16 +1,26 @@
+import { showToast } from './toast.js';
+
 export function initQuotes() {
     const quoteWidget = document.getElementById('quote-widget');
     const quoteText = document.getElementById('quote-text');
     const quoteAuthor = document.getElementById('quote-author');
 
-    // Load from local storage synchronously
-    const storedQuote = localStorage.getItem('userQuote');
-    if (storedQuote) {
-        try {
-            const parsed = JSON.parse(storedQuote);
-            quoteText.textContent = `"${parsed.text}"`;
-            quoteAuthor.textContent = `— ${parsed.author}`;
-        } catch(e) {}
+    if (chrome && chrome.storage) {
+        chrome.storage.local.get(['userQuote'], (res) => {
+            if (res.userQuote) {
+                quoteText.textContent = `"${res.userQuote.text}"`;
+                quoteAuthor.textContent = `— ${res.userQuote.author}`;
+            }
+        });
+    } else {
+        const storedQuote = localStorage.getItem('userQuote');
+        if (storedQuote) {
+            try {
+                const parsed = JSON.parse(storedQuote);
+                quoteText.textContent = `"${parsed.text}"`;
+                quoteAuthor.textContent = `— ${parsed.author}`;
+            } catch(e) {}
+        }
     }
 
     // Context Menu to edit
@@ -22,13 +32,24 @@ export function initQuotes() {
     setupQuoteModalHandlers();
 }
 
+let quoteHandlersInitialized = false;
+
 function setupQuoteModalHandlers() {
+    if (quoteHandlersInitialized) return;
+    quoteHandlersInitialized = true;
+
     const cancelBtn = document.getElementById('quote-cancel');
     const saveBtn = document.getElementById('quote-save');
     if (!cancelBtn || !saveBtn) return;
 
     cancelBtn.addEventListener('click', closeQuoteModal);
     saveBtn.addEventListener('click', saveQuoteModal);
+
+    // Close on overlay click
+    const modalOverlay = document.getElementById('quote-modal');
+    modalOverlay.addEventListener('click', (e) => {
+        if (e.target === modalOverlay) closeQuoteModal();
+    });
 }
 
 function openQuoteModal() {
@@ -62,10 +83,15 @@ function saveQuoteModal() {
     const text = document.getElementById('quote-input-text').value.trim();
     const author = document.getElementById('quote-input-author').value.trim();
 
-    if (!text) return alert('Quote text is required');
+    if (!text) return showToast('Quote text is required', 'error');
 
     const quoteData = { text, author: author || 'Unknown' };
-    localStorage.setItem('userQuote', JSON.stringify(quoteData));
+    
+    if (chrome && chrome.storage) {
+        chrome.storage.local.set({ userQuote: quoteData });
+    } else {
+        localStorage.setItem('userQuote', JSON.stringify(quoteData));
+    }
 
     const quoteText = document.getElementById('quote-text');
     const quoteAuthor = document.getElementById('quote-author');

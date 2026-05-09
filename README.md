@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="tab.png" alt="Aether Logo" width="80" />
+  <img src="tab.png" alt="NN Tab Logo" width="80" />
 </p>
 
-<h1 align="center">Aether New Tab</h1>
+<h1 align="center">NN Tab</h1>
 
 <p align="center">
   <strong>A sleek, ultra-minimalist New Tab dashboard for Google Chrome.</strong><br/>
@@ -46,7 +46,7 @@ Organize your bookmarks into filterable categories:
 - **Active tab persistence** — your last selected tab is remembered across sessions.
 
 ### 🔮 Universal Favicon Cascade
-Most bookmark managers struggle to find good icons for less popular websites. Aether features an advanced **9-step Favicon Resolver Cascade** that cycles through multiple high-quality APIs to guarantee a beautiful, pixel-perfect icon for any website.
+Most bookmark managers struggle to find good icons for less popular websites. NN Tab features an advanced **9-step Favicon Resolver Cascade** that cycles through multiple high-quality APIs to guarantee a beautiful, pixel-perfect icon for any website.
 
 The fallback chain checks these providers sequentially until a high-res icon is found:
 
@@ -112,7 +112,7 @@ Since this extension is not listed on the Chrome Web Store, you can install it m
    - Enable **Developer mode** (toggle in the top-right corner).
    - Click **"Load unpacked"** and select the extracted folder (the one containing `manifest.json`).
 
-4. **Done!** Open a new tab (`Ctrl + T`) to see Aether in action.
+4. **Done!** Open a new tab (`Ctrl + T`) to see NN Tab in action.
 
 ### Option 2: Clone the Repository
 
@@ -127,7 +127,7 @@ Then follow steps 3–4 from Option 1 above.
 ## 📂 Project Structure
 
 ```text
-Aether-New-Tab/
+NN-Tab/
 ├── css/
 │   ├── variables.css     # Design tokens — colors, spacing, radii, fonts
 │   ├── base.css          # Global resets and body styles

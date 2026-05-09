@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Aether New Tab",
+  "name": "NN Tab",
   "version": "1.0.0",
   "description": "A minimalist, dark-themed dashboard for your new tab.",
   "chrome_url_overrides": {
@@ -9,14 +9,17 @@
   "permissions": [
     "storage",
     "unlimitedStorage",
-    "bookmarks"
+    "tabs"
   ],
   "host_permissions": [
-    "https://zenquotes.io/*",
     "*://*/*"
   ],
   "background": {
     "service_worker": "js/background.js"
+  },
+  "action": {
+    "default_popup": "backup.html",
+    "default_title": "NN Tab Settings"
   },
   "icons": {
     "16": "tab.png",

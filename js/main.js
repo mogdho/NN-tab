@@ -5,6 +5,22 @@ import { initTabs } from './tabs.js';
 import { initShortcuts } from './shortcuts.js';
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Theme Loading Logic
+    if (chrome && chrome.storage) {
+        chrome.storage.local.get(['themeMode'], (res) => {
+            if (res.themeMode === 'light') document.body.classList.add('light-mode');
+        });
+        chrome.storage.onChanged.addListener((changes, namespace) => {
+            if (namespace === 'local' && changes.themeMode) {
+                if (changes.themeMode.newValue === 'light') {
+                    document.body.classList.add('light-mode');
+                } else {
+                    document.body.classList.remove('light-mode');
+                }
+            }
+        });
+    }
+
     initClock();
     initQuotes();
     initTodo();

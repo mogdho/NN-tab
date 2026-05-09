@@ -1,4 +1,5 @@
 import { getCategories, updateCategorySelectInBookmarkModal } from './tabs.js';
+import { showToast } from './toast.js';
 
 const FALLBACK_SVG = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24'%3E%3Cpath fill='%238e9192' d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z'/%3E%3C/svg%3E`;
 
@@ -24,6 +25,72 @@ async function resizeBase64(base64) {
         img.src = base64;
     });
 }
+
+// Known high-res icon URLs for subdomains that generic APIs misresolve.
+// These are direct gstatic/CDN links to the actual product icons.
+const SUBDOMAIN_ICON_OVERRIDES = {
+    // Google Workspace & Products
+    'docs.google.com': [
+        'https://www.gstatic.com/images/branding/product/2x/docs_2020q4_48dp.png',
+        'https://ssl.gstatic.com/docs/documents/images/kix-favicon7.ico'
+    ],
+    'sheets.google.com': [
+        'https://www.gstatic.com/images/branding/product/2x/sheets_2020q4_48dp.png',
+        'https://ssl.gstatic.com/docs/spreadsheets/favicon3.ico'
+    ],
+    'slides.google.com': [
+        'https://www.gstatic.com/images/branding/product/2x/slides_2020q4_48dp.png',
+        'https://ssl.gstatic.com/docs/presentations/images/favicon5.ico'
+    ],
+    'drive.google.com': [
+        'https://www.gstatic.com/images/branding/product/2x/drive_2020q4_48dp.png',
+        'https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png'
+    ],
+    'keep.google.com': [
+        'https://www.gstatic.com/images/branding/product/2x/keep_2020q4_48dp.png'
+    ],
+    'calendar.google.com': [
+        'https://www.gstatic.com/images/branding/product/2x/calendar_2020q4_48dp.png',
+        'https://calendar.google.com/googlecalendar/images/favicons_2020q4/calendar_31.ico'
+    ],
+    'meet.google.com': [
+        'https://www.gstatic.com/images/branding/product/2x/meet_2020q4_48dp.png'
+    ],
+    'maps.google.com': [
+        'https://www.gstatic.com/images/branding/product/2x/maps_2020q4_48dp.png'
+    ],
+    'photos.google.com': [
+        'https://www.gstatic.com/images/branding/product/2x/photos_2020q4_48dp.png'
+    ],
+    'translate.google.com': [
+        'https://www.gstatic.com/images/branding/product/2x/translate_2020q4_48dp.png'
+    ],
+    'forms.google.com': [
+        'https://www.gstatic.com/images/branding/product/2x/forms_2020q4_48dp.png'
+    ],
+    'classroom.google.com': [
+        'https://www.gstatic.com/images/branding/product/2x/classroom_2020q4_48dp.png'
+    ],
+    'chat.google.com': [
+        'https://www.gstatic.com/images/branding/product/2x/chat_2020q4_48dp.png'
+    ],
+    'contacts.google.com': [
+        'https://www.gstatic.com/images/branding/product/2x/contacts_2020q4_48dp.png'
+    ],
+    'earth.google.com': [
+        'https://www.gstatic.com/images/branding/product/2x/earth_2020q4_48dp.png'
+    ],
+    'news.google.com': [
+        'https://www.gstatic.com/images/branding/product/2x/googlenews_2020q4_48dp.png'
+    ],
+    // Other common subdomains
+    'music.youtube.com': [
+        'https://www.gstatic.com/youtube/media/ytm/images/applauncher/music_icon_144x144.png'
+    ],
+    'studio.youtube.com': [
+        'https://www.gstatic.com/youtube/img/creator/favicon/favicon_144.png'
+    ]
+};
 
 // Universal unified cascade resolver
 async function getNextWorkingIcon(targetUrl, startIndex = 0) {
@@ -61,7 +128,13 @@ async function getNextWorkingIcon(targetUrl, startIndex = 0) {
         `${origin}/favicon.ico` // 8: Native Root ICO
     ];
 
-    if (POPULAR_DOMAINS.includes(cleanDomain)) {
+    // Check for subdomain icon overrides first
+    const overrideUrls = SUBDOMAIN_ICON_OVERRIDES[cleanDomain] || [];
+
+    if (overrideUrls.length > 0) {
+        // Subdomain with known icons: overrides first, then Google HD, then generic cascade
+        urlsToTry = [ ...overrideUrls, apis[0], apis[6], apis[8], apis[4], apis[5] ];
+    } else if (POPULAR_DOMAINS.includes(cleanDomain)) {
         // Prioritize Google HD for giants to ensure square app icons
         urlsToTry = [ apis[0], apis[6], apis[1], apis[2], apis[3], apis[4], apis[5], apis[8] ];
     } else {
@@ -118,22 +191,84 @@ async function getNextWorkingIcon(targetUrl, startIndex = 0) {
     return null;
 }
 
+// Resolves and saves icon as Base64 iconData — never as an external URL.
+// Called for shortcuts with no cached icon yet.
 async function resolveFaviconUrl(shortcut) {
     if (shortcut.iconData && !shortcut.iconData.startsWith('data:image/svg+xml')) return;
-    if (shortcut.iconUrl) return;
 
     const result = await getNextWorkingIcon(shortcut.url, shortcut.iconSourceIndex || 0);
+    let finalData;
+
     if (result) {
         shortcut.iconSourceIndex = result.index;
-        if (result.type === 'data') shortcut.iconData = result.value;
-        else shortcut.iconUrl = result.value;
-    } else {
-        shortcut.iconData = FALLBACK_SVG;
+        if (result.type === 'data') {
+            // Already Base64 from background worker — use directly
+            finalData = result.value;
+        } else {
+            // URL result — convert to Base64 via canvas
+            finalData = await urlToBase64(result.value);
+        }
     }
-    
+
+    shortcut.iconData = finalData || FALLBACK_SVG;
+    delete shortcut.iconUrl; // ensure no leftover URL reference
+
     saveShortcuts();
     const img = document.querySelector(`img.favicon[data-id="${shortcut.id}"]`);
-    if (img) img.src = result ? result.value : FALLBACK_SVG;
+    if (img) applyFaviconToImg(img, shortcut.iconData);
+}
+
+// Silently migrates any shortcut that still has a legacy iconUrl to iconData.
+// Runs in the background after the page renders — never blocks UI.
+async function migrateIconUrls() {
+    const stale = shortcutsData.filter(s => s.iconUrl && !s.iconData);
+    if (stale.length === 0) return;
+
+    for (const shortcut of stale) {
+        const base64 = await urlToBase64(shortcut.iconUrl);
+        if (base64) {
+            shortcut.iconData = base64;
+            delete shortcut.iconUrl;
+            const img = document.querySelector(`img.favicon[data-id="${shortcut.id}"]`);
+            if (img) applyFaviconToImg(img, base64);
+        }
+    }
+    saveShortcuts();
+}
+
+// Converts an external image URL to a Base64 WebP data URI via canvas.
+function urlToBase64(url) {
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => {
+            try {
+                const canvas = document.createElement('canvas');
+                canvas.width = 64;
+                canvas.height = 64;
+                const ctx = canvas.getContext('2d');
+                const scale = Math.min(64 / img.width, 64 / img.height);
+                const w = img.width * scale;
+                const h = img.height * scale;
+                ctx.drawImage(img, (64 - w) / 2, (64 - h) / 2, w, h);
+                resolve(canvas.toDataURL('image/webp', 0.8));
+            } catch (e) {
+                resolve(null);
+            }
+        };
+        img.onerror = () => resolve(null);
+        img.src = url;
+    });
+}
+
+// Applies a src to an img element with a smooth fade-in.
+function applyFaviconToImg(img, src) {
+    img.style.opacity = '0';
+    img.onload = () => {
+        img.style.transition = 'opacity 0.25s ease';
+        img.style.opacity = '1';
+    };
+    img.src = src;
 }
 
 let shortcutsData = [];
@@ -157,33 +292,30 @@ const DEFAULT_SHORTCUTS = [
     { id: '14', name: 'Notion', url: 'https://notion.so', category: 'work' }
 ];
 
-function sanitizeData(data) {
-    return data;
-}
-
 export function initShortcuts(initialCategory = 'bookmarks') {
     currentCategory = initialCategory;
     if (chrome && chrome.storage) {
         chrome.storage.local.get(['shortcutsData'], (result) => {
             if (result.shortcutsData) {
-                shortcutsData = sanitizeData(result.shortcutsData);
-                chrome.storage.local.set({ shortcutsData });
+                shortcutsData = result.shortcutsData;
             } else {
                 shortcutsData = [...DEFAULT_SHORTCUTS];
                 chrome.storage.local.set({ shortcutsData });
             }
             renderShortcuts(currentCategory);
+            // Non-blocking background migration of any legacy iconUrl entries
+            setTimeout(migrateIconUrls, 0);
         });
     } else {
         const stored = localStorage.getItem('shortcutsData');
         if (stored) {
-            shortcutsData = sanitizeData(JSON.parse(stored));
-            localStorage.setItem('shortcutsData', JSON.stringify(shortcutsData));
+            shortcutsData = JSON.parse(stored);
         } else {
             shortcutsData = [...DEFAULT_SHORTCUTS];
             localStorage.setItem('shortcutsData', JSON.stringify(shortcutsData));
         }
         renderShortcuts(currentCategory);
+        setTimeout(migrateIconUrls, 0);
     }
     setupModalHandlers();
 }
@@ -263,11 +395,21 @@ export function renderShortcuts(category) {
         img.dataset.id = shortcut.id;
 
         if (shortcut.iconData && !shortcut.iconData.startsWith('data:image/svg+xml')) {
+            // Cached Base64 — instant, no network, no flicker
             img.src = shortcut.iconData;
+            img.style.opacity = '1';
         } else if (shortcut.iconUrl) {
+            // Legacy external URL — show it now, migrate to Base64 in background
+            img.style.opacity = '0';
+            img.onload = () => {
+                img.style.transition = 'opacity 0.25s ease';
+                img.style.opacity = '1';
+            };
             img.src = shortcut.iconUrl;
         } else {
+            // No icon at all — show shimmer placeholder, fetch in background
             img.src = FALLBACK_SVG;
+            img.style.opacity = '0.3';
             resolveFaviconUrl(shortcut);
         }
 
@@ -340,18 +482,11 @@ let tempIconResult = null; // Stores { type, value, index } for the modal live p
 let tempUrlValue = '';
 let fetchDebounceTimer = null;
 
+let modalHandlersInitialized = false;
+
 function setupModalHandlers() {
-    const saveBtn = document.getElementById('bm-save');
-    const newSaveBtn = saveBtn.cloneNode(true);
-    saveBtn.parentNode.replaceChild(newSaveBtn, saveBtn);
-
-    const deleteBtn = document.getElementById('bm-delete');
-    const newDeleteBtn = deleteBtn.cloneNode(true);
-    deleteBtn.parentNode.replaceChild(newDeleteBtn, deleteBtn);
-
-    const changeBtn = document.getElementById('bm-change-icon');
-    const newChangeBtn = changeBtn.cloneNode(true);
-    changeBtn.parentNode.replaceChild(newChangeBtn, changeBtn);
+    if (modalHandlersInitialized) return;
+    modalHandlersInitialized = true;
 
     document.getElementById('bm-save').addEventListener('click', saveModalData);
     document.getElementById('bm-delete').addEventListener('click', deleteBookmark);
@@ -510,7 +645,7 @@ function saveModalData() {
     let url = document.getElementById('bm-url').value.trim();
     const category = document.getElementById('bm-category').value;
 
-    if (!name || !url) return alert('Name and URL are required');
+    if (!name || !url) return showToast('Name and URL are required', 'error');
     if (!url.startsWith('http://') && !url.startsWith('https://')) {
         url = 'https://' + url;
     }

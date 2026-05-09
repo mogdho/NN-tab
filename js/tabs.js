@@ -1,4 +1,5 @@
 import { renderShortcuts } from './shortcuts.js';
+import { showToast } from './toast.js';
 
 export let categories = [];
 
@@ -122,23 +123,21 @@ function saveActiveTab(tabId) {
 
 // Tab Modal Logic
 let editingTabId = null;
+let tabHandlersInitialized = false;
 
 function setupTabModalHandlers() {
-    const saveBtn = document.getElementById('tab-save');
-    const newSaveBtn = saveBtn.cloneNode(true);
-    saveBtn.parentNode.replaceChild(newSaveBtn, saveBtn);
-
-    const cancelBtn = document.getElementById('tab-cancel');
-    const newCancelBtn = cancelBtn.cloneNode(true);
-    cancelBtn.parentNode.replaceChild(newCancelBtn, cancelBtn);
-
-    const deleteBtn = document.getElementById('tab-delete');
-    const newDeleteBtn = deleteBtn.cloneNode(true);
-    deleteBtn.parentNode.replaceChild(newDeleteBtn, deleteBtn);
+    if (tabHandlersInitialized) return;
+    tabHandlersInitialized = true;
 
     document.getElementById('tab-cancel').addEventListener('click', closeTabModal);
     document.getElementById('tab-save').addEventListener('click', saveTabModalData);
     document.getElementById('tab-delete').addEventListener('click', deleteTab);
+
+    // Close on overlay click
+    const modalOverlay = document.getElementById('tab-modal');
+    modalOverlay.addEventListener('click', (e) => {
+        if (e.target === modalOverlay) closeTabModal();
+    });
 }
 
 function openTabModal(cat) {
@@ -169,7 +168,7 @@ function closeTabModal() {
 
 function saveTabModalData() {
     const label = document.getElementById('tab-name').value.trim();
-    if (!label) return alert('Category Name is required');
+    if (!label) return showToast('Category name is required', 'error');
 
     if (editingTabId) {
         const idx = categories.findIndex(c => c.id === editingTabId);

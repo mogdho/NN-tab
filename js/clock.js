@@ -13,8 +13,11 @@ export function initClock() {
         // Date
         const options = { weekday: 'long', month: 'long', day: 'numeric' };
         dateDisplay.textContent = now.toLocaleDateString('en-US', options);
+
+        // Schedule next update at the start of the next minute
+        const msUntilNextMinute = (60 - now.getSeconds()) * 1000 - now.getMilliseconds() + 50;
+        setTimeout(updateClock, msUntilNextMinute);
     }
 
     updateClock();
-    setInterval(updateClock, 1000);
 }

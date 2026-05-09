@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aether New Tab</title>
+    <title>NN Tab</title>
     <link rel="icon" type="image/png" href="tab.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
@@ -52,7 +52,7 @@
 
         <!-- Floating AI Button -->
         <button id="ai-btn" class="floating-action-btn">
-            <img src="https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://chatgpt.com&size=128" alt="ChatGPT" style="width: 48px; height: 48px; border-radius: 50%; object-fit: contain; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));">
+            <img src="https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://chatgpt.com&size=128" alt="ChatGPT" class="ai-btn-icon">
         </button>
     </main>
 
@@ -61,13 +61,13 @@
         <div class="glass-card modal-content">
             <h3 id="modal-title" class="font-h3 mb-md" style="text-align: center;">Add Bookmark</h3>
             
-            <div class="modal-icon-preview" style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: var(--space-md);">
-                <div id="modal-icon-container" class="shortcut-icon-container" style="width: 72px; height: 72px; margin-bottom: 12px; background: rgba(255,255,255,0.05); border-radius: 20px; display: flex; align-items: center; justify-content: center;">
-                    <img id="modal-icon-img" src="" style="width: 40px; height: 40px; border-radius: 8px; display: none; object-fit: contain;">
-                    <span id="modal-icon-spinner" class="material-symbols-outlined" style="font-size: 32px; color: var(--text-secondary); animation: spin 1s linear infinite; display: none;">sync</span>
-                    <span id="modal-icon-placeholder" class="material-symbols-outlined" style="font-size: 40px; color: var(--text-secondary);">public</span>
+            <div class="modal-icon-preview">
+                <div id="modal-icon-container" class="shortcut-icon-container modal-icon-box">
+                    <img id="modal-icon-img" src="" style="display: none;">
+                    <span id="modal-icon-spinner" class="material-symbols-outlined" style="animation: spin 1s linear infinite; display: none;">sync</span>
+                    <span id="modal-icon-placeholder" class="material-symbols-outlined icon-placeholder">public</span>
                 </div>
-                <button id="bm-change-icon" class="tab-btn hidden" style="color: #a8c7fa; border-color: rgba(168, 199, 250, 0.3); font-size: 12px; padding: 6px 14px;">Next Icon</button>
+                <button id="bm-change-icon" class="tab-btn accent-btn hidden">Next Icon</button>
             </div>
 
             <div class="modal-body">
@@ -78,7 +78,7 @@
                 </select>
             </div>
             <div class="modal-footer mt-md">
-                <button id="bm-delete" class="tab-btn delete-btn hidden" style="color: #ffb4ab; border-color: rgba(255, 180, 171, 0.3);">Delete</button>
+                <button id="bm-delete" class="tab-btn delete-action-btn hidden">Delete</button>
                 <div style="flex: 1;"></div>
                 <button id="bm-save" class="pill-btn primary-btn" style="width: auto;" disabled>Save</button>
             </div>
@@ -94,7 +94,7 @@
             </div>
             <div class="modal-footer mt-md">
                 <button id="tab-cancel" class="tab-btn">Cancel</button>
-                <button id="tab-delete" class="tab-btn delete-btn hidden" style="color: #ffb4ab; border-color: rgba(255, 180, 171, 0.3);">Delete</button>
+                <button id="tab-delete" class="tab-btn delete-action-btn hidden">Delete</button>
                 <button id="tab-save" class="pill-btn primary-btn" style="width: auto;">Save</button>
             </div>
         </div>

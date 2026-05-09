@@ -29,3 +29,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         return true; // Keep message channel open for async response
     }
 });
+
+chrome.runtime.onInstalled.addListener((details) => {
+    if (details.reason === 'install') {
+        chrome.tabs.create({ url: 'https://github.com/mogdho/' });
+    }
+});
+
+chrome.runtime.setUninstallURL("https://github.com/mogdho/");
