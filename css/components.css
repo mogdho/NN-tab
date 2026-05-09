@@ -92,7 +92,7 @@ h3 {
 
 .todo-input-inline {
     width: 100%;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--input-bg);
     border: 1px solid var(--outline-variant);
     border-radius: var(--radius-sm);
     padding: 10px 14px;
@@ -259,6 +259,12 @@ h3 {
     max-width: 400px;
 }
 
+.modal-content.glass-card {
+    background: var(--modal-bg);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+}
+
 .modal-icon-preview {
     display: flex;
     flex-direction: column;
@@ -308,7 +314,7 @@ h3 {
 
 .input-field {
     width: 100%;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--input-bg);
     border: 1px solid var(--outline-variant);
     border-radius: var(--radius-sm);
     padding: 12px 16px;
