@@ -139,6 +139,50 @@
             background: #1a1a1a;
         }
 
+        /* ── Wallpaper Row ── */
+        .wallpaper-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 12px 14px;
+        }
+        .wallpaper-preview-box {
+            width: 48px;
+            height: 32px;
+            border-radius: 6px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background-size: cover;
+            background-position: center;
+            flex-shrink: 0;
+        }
+        .wallpaper-preview-box .material-symbols-outlined {
+            font-size: 16px;
+            color: var(--text-secondary);
+        }
+        .wallpaper-actions {
+            display: flex;
+            gap: 8px;
+            flex: 1;
+        }
+        .btn-remove {
+            background: rgba(255, 180, 171, 0.1);
+            color: #ffb4ab;
+            border: 1px solid rgba(255, 180, 171, 0.2);
+            padding: 8px 14px;
+            flex: unset;
+        }
+        .btn-remove:hover {
+            background: rgba(255, 180, 171, 0.2);
+        }
+
         /* ── Buttons ── */
         .btn-row {
             display: flex;
@@ -234,6 +278,29 @@
                     <input type="checkbox" id="theme-toggle">
                     <span class="slider"></span>
                 </label>
+            </div>
+        </div>
+
+        <hr class="divider">
+
+        <!-- Wallpaper Section -->
+        <div class="section">
+            <span class="section-label">Wallpaper</span>
+            <div class="wallpaper-row">
+                <div id="wallpaper-preview" class="wallpaper-preview-box">
+                    <span class="material-symbols-outlined" id="wallpaper-icon">wallpaper</span>
+                </div>
+                <div class="wallpaper-actions">
+                    <label class="btn btn-import" style="flex: unset; padding: 8px 14px;">
+                        <span class="material-symbols-outlined">upload</span>
+                        Set Image
+                        <input type="file" id="wallpaper-file" accept="image/*">
+                    </label>
+                    <button id="wallpaper-remove" class="btn btn-remove" style="display:none;">
+                        <span class="material-symbols-outlined">delete</span>
+                        Remove
+                    </button>
+                </div>
             </div>
         </div>
 

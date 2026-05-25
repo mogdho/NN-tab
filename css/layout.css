@@ -8,6 +8,11 @@
     margin: 0 auto;
 }
 
+@media (max-width: 1023px) {
+    .left-column { display: none; }
+    .right-column { width: 100%; }
+}
+
 @media (min-width: 1024px) {
     .dashboard-container {
         flex-direction: row;

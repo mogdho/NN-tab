@@ -5,17 +5,41 @@ import { initTabs } from './tabs.js';
 import { initShortcuts } from './shortcuts.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Theme Loading Logic
+    // Theme & Wallpaper Loading Logic
     if (chrome && chrome.storage) {
-        chrome.storage.local.get(['themeMode'], (res) => {
+        chrome.storage.local.get(['themeMode', 'wallpaperData'], (res) => {
             if (res.themeMode === 'light') document.body.classList.add('light-mode');
+            if (res.wallpaperData) {
+                const bgLayer = document.getElementById('bg-layer');
+                if (bgLayer) {
+                    bgLayer.style.backgroundImage = `url(${res.wallpaperData})`;
+                    bgLayer.style.backgroundSize = 'cover';
+                    bgLayer.style.backgroundPosition = 'center';
+                    bgLayer.style.backgroundRepeat = 'no-repeat';
+                }
+            }
         });
         chrome.storage.onChanged.addListener((changes, namespace) => {
-            if (namespace === 'local' && changes.themeMode) {
-                if (changes.themeMode.newValue === 'light') {
-                    document.body.classList.add('light-mode');
-                } else {
-                    document.body.classList.remove('light-mode');
+            if (namespace === 'local') {
+                if (changes.themeMode) {
+                    if (changes.themeMode.newValue === 'light') {
+                        document.body.classList.add('light-mode');
+                    } else {
+                        document.body.classList.remove('light-mode');
+                    }
+                }
+                if (changes.wallpaperData) {
+                    const bgLayer = document.getElementById('bg-layer');
+                    if (bgLayer) {
+                        if (changes.wallpaperData.newValue) {
+                            bgLayer.style.backgroundImage = `url(${changes.wallpaperData.newValue})`;
+                            bgLayer.style.backgroundSize = 'cover';
+                            bgLayer.style.backgroundPosition = 'center';
+                            bgLayer.style.backgroundRepeat = 'no-repeat';
+                        } else {
+                            bgLayer.style.backgroundImage = 'none';
+                        }
+                    }
                 }
             }
         });

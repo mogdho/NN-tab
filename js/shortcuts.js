@@ -415,6 +415,8 @@ export function renderShortcuts(category) {
 
         const iconContainer = document.createElement('div');
         iconContainer.className = 'shortcut-icon-container';
+        if (shortcut.iconBg === 'white') iconContainer.classList.add('icon-bg-white');
+        if (shortcut.iconBg === 'black') iconContainer.classList.add('icon-bg-black');
         iconContainer.appendChild(img);
         
         const label = document.createElement('span');
@@ -480,6 +482,7 @@ export function renderShortcuts(category) {
 let editingId = null;
 let tempIconResult = null; // Stores { type, value, index } for the modal live preview
 let tempUrlValue = '';
+let tempIconBg = 'none';
 let fetchDebounceTimer = null;
 
 let modalHandlersInitialized = false;
@@ -492,6 +495,23 @@ function setupModalHandlers() {
     document.getElementById('bm-delete').addEventListener('click', deleteBookmark);
     document.getElementById('bm-change-icon').addEventListener('click', cycleModalIcon);
     
+    // Icon BG Options
+    document.querySelectorAll('.icon-bg-option').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            document.querySelectorAll('.icon-bg-option').forEach(b => b.classList.remove('active'));
+            const target = e.currentTarget;
+            target.classList.add('active');
+            tempIconBg = target.dataset.bg;
+            
+            // Live preview
+            const container = document.getElementById('modal-icon-container');
+            container.classList.remove('icon-bg-white', 'icon-bg-black');
+            if (tempIconBg !== 'none') {
+                container.classList.add(`icon-bg-${tempIconBg}`);
+            }
+        });
+    });
+
     // Live Icon Preview
     document.getElementById('bm-url').addEventListener('input', (e) => {
         clearTimeout(fetchDebounceTimer);
@@ -598,6 +618,15 @@ function openModal(shortcut) {
     // Reset modal state
     tempIconResult = null;
     tempUrlValue = '';
+    tempIconBg = 'none';
+    
+    // Reset BG selector
+    document.querySelectorAll('.icon-bg-option').forEach(b => {
+        b.classList.toggle('active', b.dataset.bg === 'none');
+    });
+    const container = document.getElementById('modal-icon-container');
+    container.classList.remove('icon-bg-white', 'icon-bg-black');
+
     showModalIcon(null);
     document.getElementById('bm-save').disabled = true;
     changeBtn.classList.add('hidden');
@@ -612,6 +641,16 @@ function openModal(shortcut) {
         
         // Populate existing icon preview
         tempUrlValue = shortcut.url;
+        tempIconBg = shortcut.iconBg || 'none';
+        
+        // Restore BG selection
+        document.querySelectorAll('.icon-bg-option').forEach(b => {
+            b.classList.toggle('active', b.dataset.bg === tempIconBg);
+        });
+        if (tempIconBg !== 'none') {
+            document.getElementById('modal-icon-container').classList.add(`icon-bg-${tempIconBg}`);
+        }
+
         tempIconResult = { 
             type: shortcut.iconData ? 'data' : 'url', 
             value: shortcut.iconData || shortcut.iconUrl || FALLBACK_SVG, 
@@ -658,6 +697,7 @@ function saveModalData() {
                 name, 
                 url, 
                 category,
+                iconBg: tempIconBg,
                 iconSourceIndex: tempIconResult ? tempIconResult.index : 0,
                 iconData: tempIconResult && tempIconResult.type === 'data' ? tempIconResult.value : null,
                 iconUrl: tempIconResult && tempIconResult.type === 'url' ? tempIconResult.value : null
@@ -669,6 +709,7 @@ function saveModalData() {
             name,
             url,
             category,
+            iconBg: tempIconBg,
             iconSourceIndex: tempIconResult ? tempIconResult.index : 0,
             iconData: tempIconResult && tempIconResult.type === 'data' ? tempIconResult.value : null,
             iconUrl: tempIconResult && tempIconResult.type === 'url' ? tempIconResult.value : null

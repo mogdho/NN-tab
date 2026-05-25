@@ -53,7 +53,7 @@ h3 {
     flex-direction: column;
     gap: var(--space-sm);
     flex-grow: 1;
-    overflow-y: auto;
+    overflow-y: visible;
 }
 
 .todo-item {
@@ -267,16 +267,76 @@ h3 {
 
 .modal-icon-preview {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     justify-content: center;
+    gap: var(--space-md);
     margin-bottom: var(--space-md);
+}
+
+.icon-bg-selector {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    background: var(--hover-overlay);
+    padding: 8px;
+    border-radius: 16px;
+}
+
+.icon-bg-label {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+.icon-bg-option {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 2px solid transparent;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.icon-bg-option.active {
+    border-color: var(--accent-primary);
+    background: var(--surface-container-high);
+}
+
+.icon-bg-option .material-symbols-outlined {
+    font-size: 16px;
+    color: var(--text-secondary);
+}
+
+.icon-bg-swatch {
+    display: block;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+}
+.icon-bg-swatch.white { background: #ffffff; border: 1px solid rgba(0,0,0,0.1); }
+.icon-bg-swatch.black { background: #000000; border: 1px solid rgba(255,255,255,0.2); }
+
+/* Icon BG classes for the shortcuts grid */
+.shortcut-icon-container.icon-bg-white {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+}
+.shortcut-icon-container.icon-bg-black {
+    background: rgba(0, 0, 0, 0.85);
+    border-radius: 50%;
 }
 
 .modal-icon-box {
     width: 72px;
     height: 72px;
-    margin-bottom: 12px;
     background: var(--hover-overlay);
     border-radius: 20px;
     display: flex;

@@ -31,6 +31,80 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Wallpaper Logic
+    const wallpaperFile = document.getElementById('wallpaper-file');
+    const wallpaperRemove = document.getElementById('wallpaper-remove');
+    const wallpaperPreview = document.getElementById('wallpaper-preview');
+    const wallpaperIcon = document.getElementById('wallpaper-icon');
+
+    function updateWallpaperPreview(dataUrl) {
+        if (dataUrl) {
+            wallpaperPreview.style.backgroundImage = `url(${dataUrl})`;
+            if (wallpaperIcon) wallpaperIcon.style.display = 'none';
+            if (wallpaperRemove) wallpaperRemove.style.display = 'flex';
+        } else {
+            wallpaperPreview.style.backgroundImage = 'none';
+            if (wallpaperIcon) wallpaperIcon.style.display = 'block';
+            if (wallpaperRemove) wallpaperRemove.style.display = 'none';
+        }
+    }
+
+    if (chrome && chrome.storage) {
+        chrome.storage.local.get(['wallpaperData'], (res) => {
+            updateWallpaperPreview(res.wallpaperData);
+        });
+    }
+
+    if (wallpaperFile) {
+        wallpaperFile.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    let width = img.width;
+                    let height = img.height;
+                    
+                    const MAX_WIDTH = 1920;
+                    if (width > MAX_WIDTH) {
+                        height = Math.round((height * MAX_WIDTH) / width);
+                        width = MAX_WIDTH;
+                    }
+                    
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    const dataUrl = canvas.toDataURL('image/webp', 0.85);
+                    
+                    if (chrome && chrome.storage) {
+                        chrome.storage.local.set({ wallpaperData: dataUrl }, () => {
+                            updateWallpaperPreview(dataUrl);
+                            showStatus('Wallpaper set!', 'success');
+                        });
+                    }
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+            wallpaperFile.value = ''; // reset
+        });
+    }
+
+    if (wallpaperRemove) {
+        wallpaperRemove.addEventListener('click', () => {
+            if (chrome && chrome.storage) {
+                chrome.storage.local.remove(['wallpaperData'], () => {
+                    updateWallpaperPreview(null);
+                    showStatus('Wallpaper removed.', 'success');
+                });
+            }
+        });
+    }
+
     // Export Data
     const exportBtn = document.getElementById('export-btn');
     if (exportBtn) {

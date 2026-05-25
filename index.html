@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="css/components.css">
 </head>
 <body>
+    <div id="bg-layer" class="bg-layer"></div>
     <main class="dashboard-container">
         <!-- Left Column (35%) -->
         <aside class="left-column">
@@ -62,6 +63,18 @@
             <h3 id="modal-title" class="font-h3 mb-md" style="text-align: center;">Add Bookmark</h3>
             
             <div class="modal-icon-preview">
+                <div class="icon-bg-selector">
+                    <span class="icon-bg-label">Icon BG</span>
+                    <button class="icon-bg-option active" data-bg="none" title="No Background">
+                        <span class="material-symbols-outlined">block</span>
+                    </button>
+                    <button class="icon-bg-option" data-bg="white" title="White Background">
+                        <span class="icon-bg-swatch white"></span>
+                    </button>
+                    <button class="icon-bg-option" data-bg="black" title="Black Background">
+                        <span class="icon-bg-swatch black"></span>
+                    </button>
+                </div>
                 <div id="modal-icon-container" class="shortcut-icon-container modal-icon-box">
                     <img id="modal-icon-img" src="" style="display: none;">
                     <span id="modal-icon-spinner" class="material-symbols-outlined" style="animation: spin 1s linear infinite; display: none;">sync</span>
