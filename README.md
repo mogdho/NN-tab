@@ -11,7 +11,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/Manifest-V3-blue?style=flat-square" alt="Manifest V3" />
-  <img src="https://img.shields.io/badge/Version-1.3-green?style=flat-square" alt="Version 1.3" />
+  <img src="https://img.shields.io/badge/Version-1.3-green?style=flat-square" alt="Version 2.0.0" />
   <img src="https://img.shields.io/badge/License-MIT-yellow?style=flat-square" alt="License: MIT" />
   <img src="https://img.shields.io/badge/Chrome-Extension-4285F4?style=flat-square&logo=googlechrome&logoColor=white" alt="Chrome Extension" />
 </p>
