@@ -5,145 +5,159 @@
 <h1 align="center">NN Tab</h1>
 
 <p align="center">
-  <strong>A sleek, ultra-minimalist New Tab dashboard for Google Chrome.</strong><br/>
-  Crafted with pure vanilla web technologies — zero frameworks, zero bloat, instant load.
+  <strong>A sleek, minimalist New Tab dashboard for Google Chrome.</strong><br/>
+  Plain HTML, CSS and JavaScript — no frameworks, no build step, no tracking.
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Manifest-V3-blue?style=flat-square" alt="Manifest V3" />
-  <img src="https://img.shields.io/badge/Version-1.0.0-green?style=flat-square" alt="Version" />
-  <img src="https://img.shields.io/badge/License-MIT-yellow?style=flat-square" alt="License" />
+  <img src="https://img.shields.io/badge/Version-1.3-green?style=flat-square" alt="Version 1.3" />
+  <img src="https://img.shields.io/badge/License-MIT-yellow?style=flat-square" alt="License: MIT" />
   <img src="https://img.shields.io/badge/Chrome-Extension-4285F4?style=flat-square&logo=googlechrome&logoColor=white" alt="Chrome Extension" />
 </p>
+
+<p align="center">
+  <img src="docs/demo.gif" alt="NN Tab demo: switching categories, hovering bookmarks, adding a note, editing a bookmark and switching to light mode" width="860" />
+</p>
+
+---
+
+## 📸 Screenshots
+
+<table>
+  <tr>
+    <td align="center"><img src="docs/screenshots/dashboard-dark.png" alt="Dashboard in dark mode" /><br/><sub><b>Dark mode</b></sub></td>
+    <td align="center"><img src="docs/screenshots/dashboard-light.png" alt="Dashboard in light mode" /><br/><sub><b>Light mode</b></sub></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/screenshots/bookmark-modal.png" alt="Edit bookmark dialog with icon preview, icon background and category" /><br/><sub><b>Bookmark editor</b> — live icon preview, icon background, category</sub></td>
+    <td align="center"><img src="docs/screenshots/settings.png" alt="Settings popup with theme, privacy, wallpaper and backup controls" height="360" /><br/><sub><b>Settings popup</b> — theme, icon privacy, wallpaper, backup</sub></td>
+  </tr>
+</table>
+
+> Screenshots show bookmarks added by hand with online icon lookup turned on. A fresh install starts with an empty grid.
 
 ---
 
 ## ✨ Features
 
-### 🕐 Dynamic Clock & Date
-A sleek, real-time digital clock serves as the centerpiece of the left panel, displaying the current time and a fully formatted date (weekday, month, day) — updated every second.
+### 🕐 Clock & Date
+A large digital clock with the full date (weekday, month, day). It updates at the start of every minute.
 
-### 💬 Editable Inspirational Quotes
-A glassmorphic quote card displays motivational quotes. **Right-click** the quote widget to open an edit modal and set your own custom quote and author — persisted across sessions via local storage.
+### 💬 Editable Quote
+A glass card with a motivational quote. **Right-click** it to set your own quote and author.
 
-### 📝 Built-in Todo / Notes Widget
-Keep track of your daily tasks directly from the new tab. Add notes with a single click, and mark them complete with the check button. All notes are saved locally through `chrome.storage`.
+### 📝 Todo / Notes
+Click **Add Note**, type, and press **Enter** (or click away) to save. **Escape** cancels. Click the check mark to finish a note.
 
-### 🔖 Smart Bookmarks Grid
-A highly customizable bookmarking system with:
-- **Add, edit, and delete** bookmarks via a sleek glassmorphic modal.
-- **Live icon preview** — the modal fetches and displays the favicon in real-time as you type a URL.
-- **Manual icon cycling** — don't like the auto-fetched icon? Click **"Next Icon"** to cycle through all available providers until you find the perfect one.
-- **Drag-and-drop reordering** — rearrange your bookmarks in any order you prefer, with smooth drag animations.
-- **Category assignment** — assign each bookmark to a custom category for organized browsing.
-- **Right-click to edit** — right-click any bookmark to open it in the edit modal with all fields pre-populated.
+### 🔖 Bookmarks Grid
+- **Add, edit and delete** bookmarks in a modal. **Right-click** a tile to edit it.
+- **Live icon preview** while you type the URL.
+- **Next Icon** cycles through the available icon sources.
+- **Icon background**: none, white or black, for logos that need contrast.
+- **Drag and drop** to reorder.
+- Up to 24 bookmarks per category.
 
-### 🗂️ Custom Category Tabs
-Organize your bookmarks into filterable categories:
-- **Default categories:** All, Bookmarks, Work, Social.
-- **Add custom categories** by clicking the `+` button in the tab bar.
-- **Right-click any tab** to rename or delete it.
-- **Active tab persistence** — your last selected tab is remembered across sessions.
+### 🗂️ Categories
+- Defaults: All, Bookmarks, Work, Social.
+- Click **+** to add a category; **right-click** one to rename or delete it.
+- Deleting a category moves its bookmarks to another category, so nothing disappears. The last category can't be deleted.
+- The last selected category is remembered.
 
-### 🔮 Universal Favicon Cascade
-Most bookmark managers struggle to find good icons for less popular websites. NN Tab features an advanced **9-step Favicon Resolver Cascade** that cycles through multiple high-quality APIs to guarantee a beautiful, pixel-perfect icon for any website.
+### 🎨 Settings popup
+Click the NN Tab icon in the Chrome toolbar to:
+- Switch between **dark and light mode**.
+- Set or remove a **wallpaper** (resized to 1920px wide and stored locally).
+- Turn **online icon lookup** on or off (see Privacy below).
+- **Export** your data to a JSON file and **import** it again. Imports are checked first: invalid files are rejected, invalid parts are skipped, and nothing is replaced until you confirm.
 
-The fallback chain checks these providers sequentially until a high-res icon is found:
-
-| Priority | Provider | Notes |
-|:---:|---|---|
-| 1 | **Google Favicon V2** (128px) | Prioritized for popular domains |
-| 2 | **Clearbit Logo API** | High-quality company logos |
-| 3 | **Unavatar** | Aggregator — checks multiple sources |
-| 4 | **FaviconKit** (144px) | Reliable fallback |
-| 5 | **DuckDuckGo Favicon API** | Privacy-respecting alternative |
-| 6 | **Icon.horse** | Community-maintained service |
-| 7 | **Native `apple-touch-icon.png`** | Direct from site root |
-| 8 | **Native `apple-touch-icon-precomposed.png`** | Legacy iOS icon |
-| 9 | **Native `favicon.ico`** | Classic fallback |
-
-> The order is dynamically adjusted: popular domains (YouTube, GitHub, Netflix, etc.) prioritize Google HD icons first, while lesser-known sites prioritize native root icons for faster resolution.
-
-All fetched icons are resized to 64×64, compressed to WebP format, and cached as base64 data URIs in `chrome.storage` — so favicons load instantly on every subsequent new tab.
-
-### 🤖 Floating AI Chat Button
-A floating action button in the bottom-right corner launches **ChatGPT** in a dedicated popup window (400×600px) anchored near the button. Click again or click anywhere on the dashboard to dismiss the popup. Built using Chrome's `chrome.windows.create` API.
-
-### 🌑 Nocturnal Minimalism Design
-- Pure black (`#000000`) background for AMOLED-friendly, distraction-free aesthetics.
-- **Glassmorphic cards** with subtle blur, transparency, and border effects.
-- **Inter** font from Google Fonts for clean, modern typography.
-- **Material Symbols Outlined** for consistent, sharp iconography.
-- Responsive two-column layout (35% / 65%) with CSS Grid and Flexbox.
-- Smooth micro-animations and hover transitions throughout.
-
-### 🔒 Privacy-First & Offline-Ready
-All your bookmarks, categories, todos, quotes, and settings are stored **locally on your device** via Chrome's Storage API. No accounts. No cloud sync. No telemetry. Your data never leaves your machine.
+### 🤖 ChatGPT button
+The floating button in the bottom-right corner opens ChatGPT in a small popup window. Click it again, or click anywhere on the dashboard, to close it.
 
 ---
 
-## 🛠️ Tech Stack
+## 🔒 Privacy
 
-| Technology | Role |
+Everything you create (bookmarks, categories, notes, quote, wallpaper, settings) is stored **only on your device** in `chrome.storage.local`. There are no accounts, no sync, no analytics, and the extension does not open any pages on install or uninstall. Fonts are bundled with the extension, so opening a new tab makes no network requests.
+
+### Bookmark icons
+- **Default: local only.** Icons come from Chrome's own favicon cache via the `favicon` permission. No data leaves your machine. A site shows a placeholder until you've visited it at least once in Chrome; after that its icon appears on the next new tab.
+- **Optional: online icon lookup.** Turn it on in the settings popup, or click **Next Icon** in the bookmark modal. Chrome asks for your permission first. When it's on, the bookmark's domain is sent to these services to find a sharper icon:
+
+  | Service | Used for |
+  |---|---|
+  | Google (`t1.gstatic.com`, `www.gstatic.com`) | Favicons and Google product icons |
+  | Unavatar | Logo aggregator |
+  | FaviconKit | High-res favicons |
+  | DuckDuckGo | Favicons |
+  | icon.horse | Favicons |
+  | The bookmarked site itself | `apple-touch-icon.png` / `favicon.ico` (only for sites you allowed from **Next Icon**) |
+
+  Requests are sent without cookies or a referrer, and each one times out after 5 seconds. Found icons are resized to 64×64 WebP and saved, so each icon is fetched only once. Turning the setting off removes the permission; icons already saved are kept.
+
+### Permissions
+
+| Permission | Why |
 |---|---|
-| **HTML5** | Semantic, accessible markup structure |
-| **CSS3** | Vanilla CSS with custom properties, glassmorphism, Grid & Flexbox layouts |
-| **JavaScript (ES6+)** | Modular architecture with ES modules, async/await, drag-and-drop API |
-| **Chrome Extension API** | Manifest V3, `chrome.storage`, `chrome.windows`, Service Worker (`background.js`) for CORS-bypassed image fetching |
-| **Google Fonts** | Inter (300/400/500/700) + Material Symbols Outlined |
+| `storage` | Save your bookmarks, notes and settings locally. |
+| `unlimitedStorage` | Room for saved icons and a wallpaper image. |
+| `favicon` | Read icons from Chrome's local favicon cache. |
+| Optional host access | Only requested if you turn on online icon lookup. It's limited to the icon services above, plus individual sites you approve. |
 
 ---
 
 ## 🚀 Installation
 
-Since this extension is not listed on the Chrome Web Store, you can install it manually in just a few steps:
+The extension isn't on the Chrome Web Store yet. To install it manually:
 
-### Option 1: Download from GitHub Releases (Recommended)
+1. Download this repository: use **Code → Download ZIP** on GitHub, or a ZIP from the [Releases page](https://github.com/mogdho/NN-tab/releases), and extract it. Or clone it:
+   ```bash
+   git clone https://github.com/mogdho/NN-tab.git
+   ```
+2. Open `chrome://extensions/` in Chrome.
+3. Turn on **Developer mode** (top-right).
+4. Click **Load unpacked** and select the folder that contains `manifest.json`.
+5. Open a new tab (`Ctrl + T`).
 
-1. **Download the latest release:**
-   - Go to the [**Releases Page**](https://github.com/mogdho/Aether-New-Tab--Chrome-Extension/releases/latest).
-   - Download the `.zip` file from the **Assets** section.
-
-2. **Extract the ZIP:**
-   - Extract the downloaded `.zip` file to any folder on your computer.
-
-3. **Load into Chrome:**
-   - Open Chrome and navigate to `chrome://extensions/`.
-   - Enable **Developer mode** (toggle in the top-right corner).
-   - Click **"Load unpacked"** and select the extracted folder (the one containing `manifest.json`).
-
-4. **Done!** Open a new tab (`Ctrl + T`) to see NN Tab in action.
-
-### Option 2: Clone the Repository
-
-```bash
-git clone https://github.com/mogdho/Aether-New-Tab--Chrome-Extension.git
-```
-
-Then follow steps 3–4 from Option 1 above.
+**Updating from 1.2x:** existing data is kept. Older versions had permanent access to all websites; 1.3 drops that. Turn on online icon lookup in the settings popup if you want the old icon behaviour.
 
 ---
 
 ## 📂 Project Structure
 
 ```text
-NN-Tab/
+NN-tab/
 ├── css/
-│   ├── variables.css     # Design tokens — colors, spacing, radii, fonts
-│   ├── base.css          # Global resets and body styles
-│   ├── layout.css        # Two-column grid and structural layout
-│   └── components.css    # Cards, modals, widgets, buttons, inputs
+│   ├── fonts.css          # Bundled Inter + Material Symbols font faces
+│   ├── variables.css      # Design tokens (colors, spacing, radii) and light mode
+│   ├── base.css           # Global resets and body styles
+│   ├── layout.css         # Two-column layout
+│   └── components.css     # Cards, modals, widgets, buttons, inputs
+├── fonts/                 # Inter (OFL 1.1) and a Material Symbols subset (Apache 2.0)
+├── images/                # Bundled images (ChatGPT button icon)
+├── docs/                  # README demo GIF and screenshots (not used by the extension)
 ├── js/
-│   ├── main.js           # Entry point — initializes all modules
-│   ├── background.js     # Service Worker — CORS-bypassed image fetching
-│   ├── clock.js          # Real-time clock and date widget
-│   ├── quotes.js         # Editable quote widget with modal and persistence
-│   ├── shortcuts.js      # Bookmark CRUD, drag-and-drop, favicon cascade
-│   ├── tabs.js           # Category tabs — CRUD, filtering, active tab state
-│   └── todo.js           # Todo/notes list — add, complete, persist
-├── index.html            # Main dashboard markup with all modals
-├── manifest.json         # Chrome Extension Manifest V3 configuration
-└── tab.png               # Extension icon (16/48/128px)
+│   ├── main.js            # Entry point: theme, wallpaper, ChatGPT button, starts modules
+│   ├── storage.js         # chrome.storage wrapper with a localStorage fallback
+│   ├── icons.js           # Icon lookup: local favicon cache + optional online sources
+│   ├── shortcuts.js       # Bookmarks grid, modal and drag-and-drop
+│   ├── tabs.js            # Categories
+│   ├── todo.js            # Notes
+│   ├── quotes.js          # Quote widget
+│   ├── clock.js           # Clock and date
+│   ├── toast.js           # Small notification messages
+│   └── backup.js          # Settings popup: theme, wallpaper, icon privacy, import/export
+├── index.html             # New tab page
+├── backup.html            # Settings popup (toolbar icon)
+├── manifest.json          # Chrome Manifest V3 config
+└── tab.png                # Extension icon
+```
+
+### Adding a new icon glyph
+`fonts/material-symbols-outlined.woff2` contains only the icons the UI uses. To add one, add its name to the `icon_names` list below (keep the list alphabetical), open the URL in Chrome, and download the `woff2` file it links to, replacing the existing file:
+
+```
+https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=add,block,check,dark_mode,delete,download,language,light_mode,public,smart_toy,sync,upload,wallpaper&display=block
 ```
 
 ---
@@ -152,22 +166,22 @@ NN-Tab/
 
 | Action | How |
 |---|---|
-| Add a bookmark | Click the **"+"** tile in the shortcuts grid |
-| Edit / delete a bookmark | **Right-click** any bookmark tile |
-| Cycle bookmark icon | Click **"Next Icon"** in the bookmark modal |
-| Reorder bookmarks | **Drag and drop** bookmark tiles |
-| Add a category | Click the **"+"** button in the tab bar |
-| Rename / delete a category | **Right-click** the category tab |
+| Add a bookmark | Click the **+** tile in the grid |
+| Edit / delete a bookmark | **Right-click** the tile |
+| Try another icon | **Next Icon** in the bookmark modal |
+| Reorder bookmarks | Drag and drop tiles |
+| Add a category | Click **+** in the tab bar |
+| Rename / delete a category | **Right-click** the tab |
 | Edit the quote | **Right-click** the quote card |
-| Open ChatGPT | Click the **floating AI button** (bottom-right) |
-| Dismiss ChatGPT | Click anywhere on the dashboard or the AI button again |
+| Close any dialog | **Escape** or click outside it |
+| Theme, wallpaper, backup, icon privacy | Click the NN Tab toolbar icon |
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are always welcome! Feel free to open an [issue](https://github.com/mogdho/Aether-New-Tab--Chrome-Extension/issues) or submit a Pull Request if you have ideas for new features or improvements.
+Issues and pull requests are welcome at [github.com/mogdho/NN-tab](https://github.com/mogdho/NN-tab/issues).
 
 ## 📝 License
 
-This project is open-source and available under the [MIT License](LICENSE).
+[MIT](LICENSE). Bundled fonts keep their own licenses: Inter (SIL Open Font License 1.1) and Material Symbols (Apache License 2.0).

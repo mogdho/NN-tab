@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NN Tab Settings</title>
     <link rel="icon" type="image/png" href="tab.png">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/fonts.css">
     <link rel="stylesheet" href="css/variables.css">
     <style>
         *, *::before, *::after {
@@ -243,6 +242,26 @@
         .status-msg.success { color: #a8c7fa; }
         .status-msg.error   { color: #ffb4ab; }
 
+        /* ── Hints & import confirmation ── */
+        .hint {
+            font-size: 11px;
+            line-height: 1.4;
+            color: var(--text-secondary);
+        }
+        .confirm-box {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.04);
+            font-size: 11px;
+            color: var(--text-primary);
+        }
+        .confirm-box[hidden] { display: none; }
+        .confirm-box .btn { flex: 1; padding: 8px 0; }
+
         /* ── Footer ── */
         .card-footer {
             text-align: center;
@@ -283,6 +302,24 @@
 
         <hr class="divider">
 
+        <!-- Privacy Section -->
+        <div class="section">
+            <span class="section-label">Privacy</span>
+            <div class="theme-row">
+                <div class="label-group">
+                    <span class="material-symbols-outlined">language</span>
+                    <span class="label-text">Online icon lookup</span>
+                </div>
+                <label class="toggle">
+                    <input type="checkbox" id="online-icons-toggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <p class="hint">Off: icons come only from Chrome's local cache. On: bookmark domains are sent to Google, Unavatar, FaviconKit, DuckDuckGo and icon.horse to find sharper icons.</p>
+        </div>
+
+        <hr class="divider">
+
         <!-- Wallpaper Section -->
         <div class="section">
             <span class="section-label">Wallpaper</span>
@@ -319,6 +356,13 @@
                     Import
                     <input type="file" id="import-file" accept=".json">
                 </label>
+            </div>
+            <div id="import-confirm" class="confirm-box" hidden>
+                <span id="import-summary"></span>
+                <div class="btn-row">
+                    <button id="import-cancel" class="btn btn-import">Cancel</button>
+                    <button id="import-apply" class="btn btn-remove">Replace my data</button>
+                </div>
             </div>
             <p id="status-msg" class="status-msg"></p>
         </div>
